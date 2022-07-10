@@ -88,7 +88,7 @@ def get_race_url_by_year_and_mon(driver, year, month):
     list_select.select_by_value("100")
 
     # フォームを送信
-    frm = driver.find_element('css_selector', "#db_search_detail_form > form")
+    frm = driver.find_element(By.CSS_SELECTOR, "#db_search_detail_form > form")
     frm.submit()
     time.sleep(1)
     wait.until(EC.presence_of_all_elements_located)
@@ -109,13 +109,13 @@ def get_race_url_by_year_and_mon(driver, year, month):
                 time.sleep(1)
                 wait.until(EC.presence_of_all_elements_located)
 
-                all_rows = driver.find_element(By.CLASS_NAME, 'race_table_01').find_elements_by_tag_name("tr")
+                all_rows = driver.find_element(By.CLASS_NAME, 'race_table_01').find_elements(By.TAG_NAME, "tr")
                 total += len(all_rows)-1
                 for row in range(1, len(all_rows)):
-                    race_href = all_rows[row].find_element(By.TAG_NAME, "td")[4].find_element_by_tag_name("a").get_attribute("href")
+                    race_href = all_rows[row].find_elements(By.TAG_NAME, "td")[4].find_element(By.TAG_NAME, "a").get_attribute("href")
                     f.write(race_href+"\n")
                 try:
-                    target = driver.find_elements_by_link_text("次")[0]
+                    target = driver.find_elements(By.LINK_TEXT, "次")[0]
                     driver.execute_script("arguments[0].click();", target) #javascriptでクリック処理
                 except IndexError:
                     break

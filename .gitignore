@@ -7,3 +7,4 @@
 .ipynb*
 .DS_Store
 *.txt
+src/collect_data/csv

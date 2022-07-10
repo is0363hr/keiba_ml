@@ -24,8 +24,8 @@ logger = logging.getLogger(__name__) #ファイルの名前を渡す
 #     requests.post(endpoint, data=payload, headers=headers)
 
 def update():
-    get_race_url()
-    get_race_html()
+    # get_race_url()
+    # get_race_html()
     make_csv_from_html()
 
 
