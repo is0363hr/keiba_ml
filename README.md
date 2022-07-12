@@ -29,3 +29,5 @@
 |  beautifulsoup4  |  4.11.1  |
 |  chromedriver-binary  |  104.0.5112.20.0  |
 |  jupyter  |  1.0.0  |
+|  scikit-learn  |  1.1.1  |
+|  tensorflow-macos  |  2.9.2  |

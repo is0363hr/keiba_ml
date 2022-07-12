@@ -8,3 +8,6 @@
 .DS_Store
 *.txt
 src/collect_data/csv
+src/predict/tensorflow-2.9.1-cp38-cp38-macosx_12_2_x86_64.whl
+src/predict/data/
+src/predict/model/
