@@ -1,6 +1,11 @@
 # 競馬予測プログラム(Python)
 
+## データ対象
+
+https://db.netkeiba.com/?pid=race_search_detail
+
 ## ファイル概要
+
 - get_race_url.py: seleniumでレースURLを取得する
 - get_race_html.py: URLを使用してhtmlを取得する
 - make_csv_from_html.py: htmlからレースデータや馬のデータを抽出してCSVにする
@@ -13,8 +18,8 @@
 - evaluate_prediction.ipynb: モデルの予測値の評価を行う
 
 ## 注意
-ログはlogfileディレクトリ、htmlはrace_htmlディレクトリ、モデルはmodelディレクトリ、予想結果はpredictディレクトリに保存される。
 
+ログはlogfileディレクトリ、htmlはrace_htmlディレクトリ、モデルはmodelディレクトリ、予想結果はpredictディレクトリに保存される。
 
 # Encvironment
 
