@@ -8,6 +8,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 
 from pprint import pprint
+from datetime import datetime
 
 URL = "https://race.netkeiba.com/top/schedule.html?rf=sidemenu"
 WAIT_SECOND = 5
@@ -45,11 +46,14 @@ def get_race_schedule():
                         tem.append('-')
                     else:
                         tem.append(element_a[0].get_attribute("href"))
+            tem.append(datetime.now())
             race_list.append(tem)
-        print('---')
-        pprint(race_list)
+            print(race_list)
+            break
+        # print('---')
+        # pprint(race_list)
     except Exception:
-        pass
+        logger.info("error get_race_schedule")
 
 def main():
     get_race_schedule()
