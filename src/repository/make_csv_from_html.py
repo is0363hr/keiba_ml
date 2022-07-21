@@ -16,9 +16,9 @@ import re
 import os
 from os import path
 OWN_FILE_NAME = path.splitext(path.basename(__file__))[0]
-RACR_URL_DIR = "race_url"
-RACR_HTML_DIR = "race_html"
-CSV_DIR = "csv"
+RACR_URL_DIR = "data/race_url"
+RACR_HTML_DIR = "data/race_html"
+CSV_DIR = "data/csv"
 
 import logging
 logger = logging.getLogger(__name__) #ファイルの名前を渡す
