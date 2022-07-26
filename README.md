@@ -37,6 +37,6 @@ https://db.netkeiba.com/?pid=race_search_detail
 |  scikit-learn  |  1.1.1  |
 |  tensorflow-macos  |  2.9.2  |
 |  SQLAlchemy  |  1.4.39  |
-|  mysql-connector-python  |  8.0.29  |
+|  PyMySQL  |  1.0.2  |
 
 * 実行パス：src直下

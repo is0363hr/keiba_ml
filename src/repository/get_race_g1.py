@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__) #ファイルの名前を渡す
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
-from datetime import datetime
+from datetime import datetime, date
 
 
 URL = "https://race.netkeiba.com/top/schedule.html?rf=sidemenu"
@@ -33,7 +33,6 @@ def get_race_schedule():
     
     # race_list_header = 
     race_list = []
-    cnt = 0
     # ヘッダ行は除いて取得
     try:
         for i in range(1, len(trs)):
@@ -47,10 +46,10 @@ def get_race_schedule():
                         tem.append('-')
                     else:
                         tem.append(element_a[0].get_attribute("href"))
-            tem_race_date = text_race_year + '/' + tem[0].split('(')[0]
+            tem_race_date = date(int(text_race_year), int(tem[0].split('(')[0].split('/')[0]), int(tem[0].split('(')[0].split('/')[1]))
+            
             race_list.append({
-                'race_id': cnt,
-                'race_date': tem_race_date,
+                'race_date': tem_race_date.strftime('%Y-%m-%d'),
                 'race_name': tem[1],
                 'race_detail_link': tem[2],
                 'race_grade': tem[3],
@@ -58,9 +57,7 @@ def get_race_schedule():
                 'race_distance': tem[5],
                 'race_terms': tem[6],
                 'race_weight': tem[7],
-                'register_date': None,
             })
-            cnt += 1
         return race_list
     except Exception:
         logger.info("error get_race_schedule")

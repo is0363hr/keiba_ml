@@ -1,9 +1,14 @@
 # # #
 # データベース管理(レース日程の全件取得、挿入)
 # # #
+import os
+import sys
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+from db_controller.db_init import ENGINE
 
 from pprint import pprint
-from domain.race_schedule import RaceSchedule
+
+from domain.race_schedule import RaceSchedule, Sample
 from db_controller.db_init import session
 from datetime import datetime
 
@@ -35,6 +40,51 @@ class DBFunc:
         return data
     
     
+    def insert_data(self, race_date, race_name, race_detail_link, race_grade,
+                    race_city, race_distance, race_terms, race_weight):
+        try:
+            ins = "INSERT INTO RACE_SCHEDULE (race_date, race_name, race_detail_link, race_grade, race_city, race_distance, race_terms, race_weight) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+            ENGINE.execute(ins, race_date, race_name, race_detail_link, race_grade, race_city, race_distance, race_terms, race_weight)
+        except Exception as e:
+            print("データベース追加失敗")
+            print(e)
+        else:
+            log = "追加完了"
+            print(log)
+        return
+    
+    
+    # def insert_sample_data(self, race_name, race_detail_link, race_grade,
+    #                 race_city, race_distance, race_terms, race_weight):
+    def insert_sample_data(self, race_name, race_detail_link, race_grade, race_city):
+        try:
+            sample = Sample()
+            # sample.race_id = 0
+            # sample.race_date = race_date
+            sample.race_name = race_name
+            sample.race_detail_link = race_detail_link
+            sample.race_grade = race_grade
+            sample.race_city = race_city
+            # sample.race_distance = race_distance
+            # sample.race_terms = race_terms
+            # sample.race_weight = race_weight
+            session.add(sample)
+            session.commit()
+        except Exception as e:
+            print("データベース追加失敗")
+            print(e)
+        else:
+            log = "追加完了"
+            print(log)
+        return
+    
+    
+    def insert_sample_sql(self, race_date, race_name, race_detail_link, race_grade,
+                    race_city, race_distance, race_terms, race_weight):
+        ins = "INSERT INTO SAMPLE (race_date, race_name, race_detail_link, race_grade, race_city, race_distance, race_terms, race_weight) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+        ENGINE.execute(ins, race_date, race_name, race_detail_link, race_grade, race_city, race_distance, race_terms, race_weight)
+    
+    
     # レース日程をデータベースに挿入する処理
     def bulk_insert_data(self, data_list):
         now = datetime.now()
@@ -42,7 +92,6 @@ class DBFunc:
         for d in data_list:
             race_list.append(
                 RaceSchedule(
-                    race_id = d['race_id'],
                     race_date = d['race_date'],
                     race_name = d['race_name'],
                     race_detail_link = d['race_detail_link'],
@@ -51,7 +100,6 @@ class DBFunc:
                     race_distance = d['race_distance'],
                     race_terms = d['race_terms'],
                     race_weight = d['race_weight'],
-                    register_date = None,
                 )
             )
         try:
