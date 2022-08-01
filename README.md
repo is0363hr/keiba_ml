@@ -17,6 +17,14 @@ https://db.netkeiba.com/?pid=race_search_detail
 - train_hyperas_no_obstacle.py: train_hyperas.pyとは違い、学習データから障害レースを取り除く
 - evaluate_prediction.ipynb: モデルの予測値の評価を行う
 
+
+## 定期実行ファイル
+
+- get_race_g1.py: 年に一回
+- (get_race_detail_g1.py: レースごとに必要)
+- 予測のための特徴量データの作成
+
+
 ## 注意
 
 ログはlogfileディレクトリ、htmlはrace_htmlディレクトリ、モデルはmodelディレクトリ、予想結果はpredictディレクトリに保存される。
@@ -40,3 +48,67 @@ https://db.netkeiba.com/?pid=race_search_detail
 |  PyMySQL  |  1.0.2  |
 
 * 実行パス：src直下
+
+## Feature
+
+netkeiba.com
+
+### 予測
+
+- 順位
+- (ゴールタイム)
+
+### 学習
+
+#### [get_feature_race_detail][1]
+
+- 枠番
+- 馬番
+- 性別
+- 年齢
+- 騎手
+- 厩舎
+- 予想オッズ
+- 人気
+- (レース名)
+- レースに参加する馬の数
+- 開催地
+- 距離
+- 芝かダートか
+- コースが右回りか左回りか直線か
+- ランク
+- 過去5年のレース
+
+#### [get_feature_race_overview][2]
+
+- 過去5レースの情報
+  - 近走成績
+  - 場・芝ダ・距離
+  - 着順・偏差値・上昇度
+
+#### [get_feature_horce_info][3]
+
+- 距離適正
+- 脚質
+- 負担重量（斤量）
+- 日付
+- 開催
+- 頭数
+- 枠番
+- 馬番
+- オッズ
+- 人気
+- 順位
+- 騎手
+- 距離
+- (レース名)
+
+計算して求める
+- 前回と騎手やオーナーが変わっているかどうか
+- 前回レースとの時間差
+- 前回からの体重変化
+- 障害レースかどうか
+
+[1]:https://race.netkeiba.com/race/shutuba.html?race_id={race_id}&rf=race_submenu
+[2]:https://race.sp.netkeiba.com/barometer/score.html?race_id={race_id}&rf=shutuba_submenu
+[3]:https://db.netkeiba.com/horse/{horce_id}
