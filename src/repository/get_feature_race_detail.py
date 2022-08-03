@@ -3,6 +3,7 @@
 """
 
 import logging
+from tokenize import Double
 logger = logging.getLogger(__name__) #ファイルの名前を渡す
 
 from selenium import webdriver
@@ -89,14 +90,12 @@ def get_race_detail(url):
             'jockey': jockey,
             'trainer': trainer,
             'odds': odds,
-            'population': population,
+            'population': int(population),
         })
-    
     return race_list, horse_list
 
 
 def main():
-    #TODO 型変換
     URL = "https://race.netkeiba.com/special/index.html?id=0085"
     get_race_detail(URL)
 
