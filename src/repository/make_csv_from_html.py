@@ -8,21 +8,23 @@ now_datetime = datetime.datetime.now(pytz.timezone('Asia/Tokyo'))
 from bs4 import BeautifulSoup
 import numpy as np
 import pandas as pd
+from pprint import pprint
+import warnings
 
 import time
 import re
 import os
 from os import path
 OWN_FILE_NAME = path.splitext(path.basename(__file__))[0]
-RACR_URL_DIR = "race_url"
-RACR_HTML_DIR = "race_html"
-CSV_DIR = "csv"
+RACR_URL_DIR = "data/race_url"
+RACR_HTML_DIR = "data/race_html"
+CSV_DIR = "data/csv"
 
 import logging
 logger = logging.getLogger(__name__) #ファイルの名前を渡す
+warnings.simplefilter('ignore')
 
-
-race_data_columns=[
+race_data_columns = [
     'race_id',
     'race_round',
     'race_title',
@@ -51,9 +53,9 @@ race_data_columns=[
     'umatan',
     'renhuku3',
     'rentan3'
-    ]
+]
 
-horse_data_columns=[
+horse_data_columns = [
     'race_id',
     'rank',
     'frame_number',
@@ -86,10 +88,12 @@ def make_csv_from_html_by_year(year):
         race_df = pd.DataFrame(columns=race_data_columns )
         horse_df = pd.DataFrame(columns=horse_data_columns )
         logger.info("saving csv (" + str(year) +")")
-        total = 0;
+        total = 0
+        
         for month in range(1, 13):
             # race_html/year/month というディレクトリが存在すればappend, なければ何もしない
             html_dir = RACR_HTML_DIR+"/"+str(year)+"/"+str(month)
+            print(html_dir)
             if os.path.isdir(html_dir):
                 file_list = os.listdir(html_dir) # get all file names
                 total += len(file_list)
@@ -100,17 +104,23 @@ def make_csv_from_html_by_year(year):
                         list = file_name.split(".")
                         race_id = list[-2]
                         race_list, horse_list_list = get_rade_and_horse_data_by_html(race_id, html)
+                        # print(html_dir+"/"+file_name)
                         for horse_list in horse_list_list:
-                            horse_se = pd.Series( horse_list, index=horse_df.columns)
-                            horse_df = horse_df.append(horse_se, ignore_index=True)
+                            try:
+                                horse_se = pd.Series(horse_list, index=horse_df.columns)
+                                horse_df = horse_df.append(horse_se, ignore_index=True)
+                                # horse_df = pd.concat([horse_df, horse_se], ignore_index=True)
+                            except Exception:
+                                print('error:'+html_dir+"/"+file_name)
                         race_se = pd.Series(race_list, index=race_df.columns )
                         race_df = race_df.append(race_se, ignore_index=True )
+                        # race_df = pd.concat([race_df, race_se], ignore_index=True )
 
-        race_df.to_csv(save_race_csv, header=True, index=False)
-        horse_df.to_csv(horse_race_csv, header=True, index=False)
-        logger.info(' (rows, columns) of race_df:\t'+ str(race_df.shape))
-        logger.info(' (rows, columns) of horse_df:\t'+ str(horse_df.shape))
-        logger.info("saved " + str(total) + " htmls to csv (" + str(year) +")")
+            race_df.to_csv(save_race_csv, header=True, index=False)
+            horse_df.to_csv(horse_race_csv, header=True, index=False)
+            logger.info(' (rows, columns) of race_df:\t'+ str(race_df.shape))
+            logger.info(' (rows, columns) of horse_df:\t'+ str(horse_df.shape))
+            logger.info("saved " + str(total) + " htmls to csv (" + str(year) +")")
     else:
         logger.info("already have csv (" + str(year) +")")
 
@@ -214,7 +224,10 @@ def get_rade_and_horse_data_by_html(race_id, html):
         # goal_time
         horse_list.append(result_row[7].get_text())
         # goal_time_dif
-        horse_list.append(result_row[8].get_text())
+        if result_row[8].get_text() == '':
+            horse_list.append('-')
+        else:
+            horse_list.append(result_row[8].get_text())
         # time_value(premium)
         horse_list.append(result_row[9].get_text())
         # half_way_rank
@@ -236,6 +249,10 @@ def get_rade_and_horse_data_by_html(race_id, html):
         horse_list.append(result_row[19].find('a').get('href').split("/")[-2])
 
         horse_list_list.append(horse_list)
+        
+        # print(race_list)
+        # print('--------------')
+        # print(horse_list_list)
 
     return race_list, horse_list_list
 

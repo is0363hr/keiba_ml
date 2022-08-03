@@ -13,7 +13,7 @@ OWN_FILE_NAME = path.splitext(path.basename(__file__))[0]
 import logging
 logger = logging.getLogger(__name__) #ファイルの名前を渡す
 
-my_token = os.environ['LINE_TOKEN']
+# my_token = os.environ['LINE_TOKEN']
 
 from sklearn.model_selection import TimeSeriesSplit
 from sklearn.preprocessing import StandardScaler
@@ -24,13 +24,13 @@ import tensorflow as tf
 from tensorflow.keras.callbacks import EarlyStopping
 from tensorflow.keras.callbacks import CSVLogger
 
-def send_line_notification(message):
-    line_token = my_token
-    endpoint = 'https://notify-api.line.me/api/notify'
-    message = "\n{}".format(message)
-    payload = {'message': message}
-    headers = {'Authorization': 'Bearer {}'.format(line_token)}
-    requests.post(endpoint, data=payload, headers=headers)
+# def send_line_notification(message):
+#     line_token = my_token
+#     endpoint = 'https://notify-api.line.me/api/notify'
+#     message = "\n{}".format(message)
+#     payload = {'message': message}
+#     headers = {'Authorization': 'Bearer {}'.format(line_token)}
+#     requests.post(endpoint, data=payload, headers=headers)
 
 
 def train_test_time_split(dataflame, train_ratio=0.8):
@@ -92,7 +92,7 @@ def plot_history(history,name):
 
 
 def train_model(train_data,train_label,val_data,val_label,target_name,):
-    logger.info("start train!"))
+    logger.info("start train!")
     callbacks = []
     callbacks.append(EarlyStopping(monitor='val_loss', patience=3))
     callbacks.append(CSVLogger("model/{}_{}_history.csv".format(OWN_FILE_NAME,target_name)))
@@ -115,7 +115,7 @@ def train_model(train_data,train_label,val_data,val_label,target_name,):
 def keras_train(target_name):
     logger.info("start train for {}".format(target_name))
 
-    final_df = pd.read_csv("csv/final_data.csv", sep=",")
+    final_df = pd.read_csv("../collect_data/csv/final_data.csv", sep=",")
     train_df, test_df = train_test_time_split(final_df)
     X_train, Y_train = label_split_and_drop(train_df, target_name)
     X_test, Y_test = label_split_and_drop(test_df, target_name)
@@ -129,7 +129,8 @@ def keras_train(target_name):
     val_data = X_train[train_size:len(Y_train)]
     val_label = Y_train[train_size:len(Y_train)]
     model = train_model(train_data,train_label,val_data,val_label,target_name)
-    predict_proba_results = model.predict_proba(X_test)
+    # predict_proba_results = model.predict_proba(X_test)
+    predict_proba_results = model.predict(X_test)
 
     with StringIO() as buf:
             # StringIOに書き込む
@@ -161,15 +162,16 @@ if __name__ == '__main__':
         is_hukusyo_se = keras_train('is_hukusyo')
 
         # 結果の保存
-        final_df = pd.read_csv("csv/final_data.csv", sep=",")
+        final_df = pd.read_csv("../collect_data/csv/final_data.csv", sep=",")
         _, test_df = train_test_time_split(final_df)
         predicted_test_df = pd.concat([test_df, is_tansyo_se,is_hukusyo_se], axis=1)
-        predicted_test_df.to_csv("predict/{}_predicted_test.csv".format(OWN_FILE_NAME), index=False)
+        predicted_test_df.to_csv("data/{}_predicted_test.csv".format(OWN_FILE_NAME), index=False)
 
-        send_line_notification(OWN_FILE_NAME+" end!")
+        # send_line_notification(OWN_FILE_NAME+" end!")
     except Exception as e:
         t, v, tb = sys.exc_info()
-        for str in traceback.format_exception(t,v,tb):
-            str = "\n"+str
-            logger.error(str)
-            send_line_notification(str)
+        print(e)
+        # for str in traceback.format_exception(t,v,tb):
+        #     str = "\n"+str
+        #     logger.error(str)
+        #     send_line_notification(str)

@@ -15,7 +15,7 @@ OWN_FILE_NAME = path.splitext(path.basename(__file__))[0]
 import logging
 logger = logging.getLogger(__name__) #ファイルの名前を渡す
 
-my_token = os.environ['LINE_TOKEN']
+# my_token = os.environ['LINE_TOKEN']
 
 from sklearn.model_selection import TimeSeriesSplit
 from sklearn.preprocessing import StandardScaler
@@ -33,13 +33,13 @@ from hyperas import optim
 from hyperas.distributions import choice, uniform
 
 
-def send_line_notification(message):
-    line_token = my_token
-    endpoint = 'https://notify-api.line.me/api/notify'
-    message = "\n{}".format(message)
-    payload = {'message': message}
-    headers = {'Authorization': 'Bearer {}'.format(line_token)}
-    requests.post(endpoint, data=payload, headers=headers)
+# def send_line_notification(message):
+#     line_token = my_token
+#     endpoint = 'https://notify-api.line.me/api/notify'
+#     message = "\n{}".format(message)
+#     payload = {'message': message}
+#     headers = {'Authorization': 'Bearer {}'.format(line_token)}
+#     requests.post(endpoint, data=payload, headers=headers)
 
 
 def train_test_time_split(dataflame, train_ratio=0.8):
@@ -63,6 +63,7 @@ def label_split_and_drop(X_df, target_name):
     sc = StandardScaler()
     X = sc.fit_transform(X)
     return X, Y
+
 
 def create_model_is_tansyo(X_train, Y_train, X_test, Y_test):
     train_size = int(len(Y_train) * 0.8)
@@ -145,6 +146,7 @@ def create_model_is_hukusyo(X_train, Y_train, X_test, Y_test):
     print('Best validation loss of epoch:', val_loss)
     return {'loss': val_loss, 'status': STATUS_OK, 'model': model}
 
+
 def prepare_data_is_tansyo():
     target_name='is_tansyo'
     final_df = pd.read_csv("csv/final_data.csv", sep=",")
@@ -188,6 +190,7 @@ def prepare_data_is_hukusyo():
     X_test = sc.fit_transform(X_test)
 
     return X_train, Y_train, X_test, Y_test
+
 
 def hyperas_learn(target_name):
     """
@@ -250,10 +253,10 @@ if __name__ == '__main__':
         predicted_test_df = pd.concat([test_df, is_tansyo_se,is_hukusyo_se], axis=1)
         predicted_test_df.to_csv("predict/{}_predicted_test.csv".format(OWN_FILE_NAME), index=False)
 
-        send_line_notification(OWN_FILE_NAME+" end!")
+        # send_line_notification(OWN_FILE_NAME+" end!")
     except Exception as e:
         t, v, tb = sys.exc_info()
         for str in traceback.format_exception(t,v,tb):
             str = "\n"+str
             logger.error(str)
-            send_line_notification(str)
+            # send_line_notification(str)
